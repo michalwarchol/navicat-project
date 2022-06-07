@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : project
- Source Server Type    : MariaDB
- Source Server Version : 100607
+ Source Server         : navicat
+ Source Server Type    : MySQL
+ Source Server Version : 80029
  Source Host           : localhost:3306
- Source Schema         : projekt
+ Source Schema         : project
 
- Target Server Type    : MariaDB
- Target Server Version : 100607
+ Target Server Type    : MySQL
+ Target Server Version : 80029
  File Encoding         : 65001
 
- Date: 07/06/2022 18:27:38
+ Date: 07/06/2022 22:24:18
 */
 
 SET NAMES utf8mb4;
@@ -22,8 +22,8 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `t_cars`;
 CREATE TABLE `t_cars`  (
-  `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `price` int(10) UNSIGNED NOT NULL,
+  `ID` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `price` int UNSIGNED NOT NULL,
   `brand` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   `mode` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   `year_of_production` year NOT NULL,
@@ -31,15 +31,15 @@ CREATE TABLE `t_cars`  (
   `fuel` enum('diesel','petrol','hybrid','electric','gas') CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   `combusion` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   `colour` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
-  `engine_capacity` int(10) UNSIGNED NOT NULL,
-  `id_tires` int(10) UNSIGNED NOT NULL,
-  `id_shop` int(10) UNSIGNED NOT NULL,
+  `engine_capacity` int UNSIGNED NOT NULL,
+  `id_tires` int UNSIGNED NOT NULL,
+  `id_shop` int UNSIGNED NOT NULL,
   PRIMARY KEY (`ID`) USING BTREE,
-  INDEX `id_tires`(`id_tires`) USING BTREE,
-  INDEX `id_shop`(`id_shop`) USING BTREE,
+  INDEX `id_tires`(`id_tires` ASC) USING BTREE,
+  INDEX `id_shop`(`id_shop` ASC) USING BTREE,
   CONSTRAINT `t_cars_ibfk_1` FOREIGN KEY (`id_tires`) REFERENCES `t_tires` (`ID`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `t_cars_ibfk_2` FOREIGN KEY (`id_shop`) REFERENCES `t_shops` (`ID`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of t_cars
@@ -58,51 +58,56 @@ INSERT INTO `t_cars` VALUES (8, 68500, 'Ford', 'Mondeo', 2018, '165888', 'diesel
 -- ----------------------------
 DROP TABLE IF EXISTS `t_cart_cars`;
 CREATE TABLE `t_cart_cars`  (
-  `id_cart` int(10) UNSIGNED NOT NULL,
-  `id_car` int(10) UNSIGNED NOT NULL,
+  `id_cart` int UNSIGNED NOT NULL,
+  `id_car` int UNSIGNED NOT NULL,
   PRIMARY KEY (`id_cart`, `id_car`) USING BTREE,
-  INDEX `fk_cart_car`(`id_car`) USING BTREE,
-  CONSTRAINT `fk_cart_car` FOREIGN KEY (`id_car`) REFERENCES `t_cars` (`ID`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `fk_cart_cart` FOREIGN KEY (`id_cart`) REFERENCES `t_carts` (`ID`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
+  INDEX `fk_cart_car`(`id_car` ASC) USING BTREE,
+  CONSTRAINT `fk_cart_car` FOREIGN KEY (`id_car`) REFERENCES `t_cars` (`ID`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  CONSTRAINT `fk_cart_cart` FOREIGN KEY (`id_cart`) REFERENCES `t_carts` (`ID`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of t_cart_cars
 -- ----------------------------
+INSERT INTO `t_cart_cars` VALUES (1, 2);
+INSERT INTO `t_cart_cars` VALUES (1, 3);
 
 -- ----------------------------
 -- Table structure for t_carts
 -- ----------------------------
 DROP TABLE IF EXISTS `t_carts`;
 CREATE TABLE `t_carts`  (
-  `ID` int(10) UNSIGNED NOT NULL,
-  `customer_id` int(10) UNSIGNED NOT NULL,
-  `total_price` int(11) NOT NULL,
-  `car_amount` int(11) NOT NULL,
+  `ID` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `customer_id` int UNSIGNED NOT NULL,
+  `total_price` int NOT NULL,
+  `car_amount` int NOT NULL,
   PRIMARY KEY (`ID`) USING BTREE,
-  INDEX `fk_customer_cart`(`customer_id`) USING BTREE,
+  INDEX `fk_customer_cart`(`customer_id` ASC) USING BTREE,
+  INDEX `ID`(`ID` ASC, `total_price` ASC) USING BTREE,
+  INDEX `total_price`(`total_price` ASC) USING BTREE,
   CONSTRAINT `fk_customer_cart` FOREIGN KEY (`customer_id`) REFERENCES `t_customers` (`ID`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of t_carts
 -- ----------------------------
+INSERT INTO `t_carts` VALUES (1, 50, 240900, 2);
 
 -- ----------------------------
 -- Table structure for t_customers
 -- ----------------------------
 DROP TABLE IF EXISTS `t_customers`;
 CREATE TABLE `t_customers`  (
-  `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ID` int UNSIGNED NOT NULL AUTO_INCREMENT,
   `first_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   `last_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   `city` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
-  `car_id` int(10) UNSIGNED NULL DEFAULT NULL,
+  `car_id` int UNSIGNED NULL DEFAULT NULL,
   `nickname` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   PRIMARY KEY (`ID`) USING BTREE,
-  INDEX `car_id`(`car_id`) USING BTREE,
+  INDEX `car_id`(`car_id` ASC) USING BTREE,
   CONSTRAINT `car_id` FOREIGN KEY (`car_id`) REFERENCES `t_cars` (`ID`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 52 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 52 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of t_customers
@@ -121,13 +126,13 @@ INSERT INTO `t_customers` VALUES (51, 'Mikołaj', 'Warchoł', 'Gdańsk', NULL, '
 -- ----------------------------
 DROP TABLE IF EXISTS `t_previous_owners`;
 CREATE TABLE `t_previous_owners`  (
-  `customer_id` int(10) UNSIGNED NOT NULL,
-  `car_id` int(10) UNSIGNED NOT NULL,
+  `customer_id` int UNSIGNED NOT NULL,
+  `car_id` int UNSIGNED NOT NULL,
   PRIMARY KEY (`customer_id`, `car_id`) USING BTREE,
-  INDEX `fk_car`(`car_id`) USING BTREE,
+  INDEX `fk_car`(`car_id` ASC) USING BTREE,
   CONSTRAINT `fk_car` FOREIGN KEY (`car_id`) REFERENCES `t_cars` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_customer` FOREIGN KEY (`customer_id`) REFERENCES `t_customers` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of t_previous_owners
@@ -138,13 +143,13 @@ CREATE TABLE `t_previous_owners`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `t_shops`;
 CREATE TABLE `t_shops`  (
-  `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ID` int UNSIGNED NOT NULL AUTO_INCREMENT,
   `city` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   `is_open` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of t_shops
@@ -159,14 +164,14 @@ INSERT INTO `t_shops` VALUES (4, 'Krakow', 'Prądnicka 36', 'NO', 'Opony 36');
 -- ----------------------------
 DROP TABLE IF EXISTS `t_tires`;
 CREATE TABLE `t_tires`  (
-  `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `price` int(10) UNSIGNED NOT NULL,
+  `ID` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `price` int UNSIGNED NOT NULL,
   `producent` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   `profile` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
-  `diameter` int(10) UNSIGNED NOT NULL,
-  `width` int(10) UNSIGNED NOT NULL,
+  `diameter` int UNSIGNED NOT NULL,
+  `width` int UNSIGNED NOT NULL,
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of t_tires
@@ -213,6 +218,63 @@ IF vOrder LIKE "ASC" THEN
 ELSE
 	SELECT * FROM t_cars WHERE price BETWEEN vFrom AND vTo ORDER BY price DESC;
 END IF;
+
+END
+;;
+delimiter ;
+
+-- ----------------------------
+-- Triggers structure for table t_cart_cars
+-- ----------------------------
+DROP TRIGGER IF EXISTS `tr_update_cart_INSERT`;
+delimiter ;;
+CREATE TRIGGER `tr_update_cart_INSERT` AFTER INSERT ON `t_cart_cars` FOR EACH ROW BEGIN
+
+DECLARE var_total_price int;
+DECLARE var_car_amount int;
+
+SET var_total_price = (SELECT sum(price) FROM t_cart_cars LEFT JOIN t_cars ON id_car = t_cars.ID WHERE id_cart = NEW.id_cart);
+SET var_car_amount = (SELECT count(*) FROM t_cart_cars WHERE id_cart = NEW.id_cart);
+
+UPDATE t_carts set total_price=var_total_price, car_amount=var_car_amount WHERE ID=NEW.id_cart;
+
+END
+;;
+delimiter ;
+
+-- ----------------------------
+-- Triggers structure for table t_cart_cars
+-- ----------------------------
+DROP TRIGGER IF EXISTS `tr_update_cart_UPDATE`;
+delimiter ;;
+CREATE TRIGGER `tr_update_cart_UPDATE` AFTER UPDATE ON `t_cart_cars` FOR EACH ROW BEGIN
+
+DECLARE var_total_price int;
+DECLARE var_car_amount int;
+
+SET var_total_price = (SELECT sum(price) FROM t_cart_cars LEFT JOIN t_cars ON id_car = t_cars.ID WHERE id_cart = NEW.id_cart);
+SET var_car_amount = (SELECT count(*) FROM t_cart_cars WHERE id_cart = NEW.id_cart);
+
+UPDATE t_carts set total_price=var_total_price, car_amount=var_car_amount WHERE ID=NEW.id_cart;
+
+END
+;;
+delimiter ;
+
+-- ----------------------------
+-- Triggers structure for table t_cart_cars
+-- ----------------------------
+DROP TRIGGER IF EXISTS `tr_update_cart_DELETE`;
+delimiter ;;
+CREATE TRIGGER `tr_update_cart_DELETE` AFTER DELETE ON `t_cart_cars` FOR EACH ROW BEGIN
+
+DECLARE var_total_price int;
+DECLARE var_car_amount int;
+
+SET var_total_price = (SELECT sum(price) FROM t_cart_cars LEFT JOIN t_cars ON id_car = t_cars.ID WHERE id_cart = OLD.id_cart);
+SET var_car_amount = (SELECT count(*) FROM t_cart_cars WHERE id_cart = OLD.id_cart);
+
+UPDATE t_carts set total_price=var_total_price, car_amount=var_car_amount WHERE ID=OLD.id_cart;
 
 END
 ;;
