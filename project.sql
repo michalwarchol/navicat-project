@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : navicat
- Source Server Type    : MySQL
- Source Server Version : 80029
+ Source Server         : project
+ Source Server Type    : MariaDB
+ Source Server Version : 100607
  Source Host           : localhost:3306
- Source Schema         : project
+ Source Schema         : projekt
 
- Target Server Type    : MySQL
- Target Server Version : 80029
+ Target Server Type    : MariaDB
+ Target Server Version : 100607
  File Encoding         : 65001
 
- Date: 05/06/2022 13:50:20
+ Date: 07/06/2022 18:27:38
 */
 
 SET NAMES utf8mb4;
@@ -22,24 +22,24 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `t_cars`;
 CREATE TABLE `t_cars`  (
-  `ID` int UNSIGNED NOT NULL AUTO_INCREMENT,
-  `price` int UNSIGNED NOT NULL,
+  `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `price` int(10) UNSIGNED NOT NULL,
   `brand` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   `mode` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
-  `year_of_production` int UNSIGNED NOT NULL,
+  `year_of_production` year NOT NULL,
   `course` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   `fuel` enum('diesel','petrol','hybrid','electric','gas') CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   `combusion` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   `colour` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
-  `engine_capacity` int UNSIGNED NOT NULL,
-  `id_tires` int UNSIGNED NOT NULL,
-  `id_shop` int UNSIGNED NOT NULL,
+  `engine_capacity` int(10) UNSIGNED NOT NULL,
+  `id_tires` int(10) UNSIGNED NOT NULL,
+  `id_shop` int(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`ID`) USING BTREE,
-  INDEX `id_tires`(`id_tires` ASC) USING BTREE,
-  INDEX `id_shop`(`id_shop` ASC) USING BTREE,
+  INDEX `id_tires`(`id_tires`) USING BTREE,
+  INDEX `id_shop`(`id_shop`) USING BTREE,
   CONSTRAINT `t_cars_ibfk_1` FOREIGN KEY (`id_tires`) REFERENCES `t_tires` (`ID`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `t_cars_ibfk_2` FOREIGN KEY (`id_shop`) REFERENCES `t_shops` (`ID`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of t_cars
@@ -58,10 +58,10 @@ INSERT INTO `t_cars` VALUES (8, 68500, 'Ford', 'Mondeo', 2018, '165888', 'diesel
 -- ----------------------------
 DROP TABLE IF EXISTS `t_cart_cars`;
 CREATE TABLE `t_cart_cars`  (
-  `id_cart` int UNSIGNED NOT NULL,
-  `id_car` int UNSIGNED NOT NULL,
+  `id_cart` int(10) UNSIGNED NOT NULL,
+  `id_car` int(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`id_cart`, `id_car`) USING BTREE,
-  INDEX `fk_cart_car`(`id_car` ASC) USING BTREE,
+  INDEX `fk_cart_car`(`id_car`) USING BTREE,
   CONSTRAINT `fk_cart_car` FOREIGN KEY (`id_car`) REFERENCES `t_cars` (`ID`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_cart_cart` FOREIGN KEY (`id_cart`) REFERENCES `t_carts` (`ID`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
@@ -75,12 +75,12 @@ CREATE TABLE `t_cart_cars`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `t_carts`;
 CREATE TABLE `t_carts`  (
-  `ID` int UNSIGNED NOT NULL,
-  `customer_id` int UNSIGNED NOT NULL,
-  `total_price` int NOT NULL,
-  `car_amount` int NOT NULL,
+  `ID` int(10) UNSIGNED NOT NULL,
+  `customer_id` int(10) UNSIGNED NOT NULL,
+  `total_price` int(11) NOT NULL,
+  `car_amount` int(11) NOT NULL,
   PRIMARY KEY (`ID`) USING BTREE,
-  INDEX `fk_customer_cart`(`customer_id` ASC) USING BTREE,
+  INDEX `fk_customer_cart`(`customer_id`) USING BTREE,
   CONSTRAINT `fk_customer_cart` FOREIGN KEY (`customer_id`) REFERENCES `t_customers` (`ID`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
 
@@ -93,16 +93,16 @@ CREATE TABLE `t_carts`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `t_customers`;
 CREATE TABLE `t_customers`  (
-  `ID` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `first_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   `last_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   `city` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
-  `car_id` int UNSIGNED NULL DEFAULT NULL,
+  `car_id` int(10) UNSIGNED NULL DEFAULT NULL,
   `nickname` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   PRIMARY KEY (`ID`) USING BTREE,
-  INDEX `car_id`(`car_id` ASC) USING BTREE,
+  INDEX `car_id`(`car_id`) USING BTREE,
   CONSTRAINT `car_id` FOREIGN KEY (`car_id`) REFERENCES `t_cars` (`ID`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 52 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of t_customers
@@ -121,13 +121,13 @@ INSERT INTO `t_customers` VALUES (51, 'Mikołaj', 'Warchoł', 'Gdańsk', NULL, '
 -- ----------------------------
 DROP TABLE IF EXISTS `t_previous_owners`;
 CREATE TABLE `t_previous_owners`  (
-  `customer_id` int UNSIGNED NOT NULL,
-  `car_id` int UNSIGNED NOT NULL,
+  `customer_id` int(10) UNSIGNED NOT NULL,
+  `car_id` int(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`customer_id`, `car_id`) USING BTREE,
-  INDEX `fk_car`(`car_id` ASC) USING BTREE,
+  INDEX `fk_car`(`car_id`) USING BTREE,
   CONSTRAINT `fk_car` FOREIGN KEY (`car_id`) REFERENCES `t_cars` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_customer` FOREIGN KEY (`customer_id`) REFERENCES `t_customers` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of t_previous_owners
@@ -138,13 +138,13 @@ CREATE TABLE `t_previous_owners`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `t_shops`;
 CREATE TABLE `t_shops`  (
-  `ID` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `city` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   `is_open` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of t_shops
@@ -159,14 +159,14 @@ INSERT INTO `t_shops` VALUES (4, 'Krakow', 'Prądnicka 36', 'NO', 'Opony 36');
 -- ----------------------------
 DROP TABLE IF EXISTS `t_tires`;
 CREATE TABLE `t_tires`  (
-  `ID` int UNSIGNED NOT NULL AUTO_INCREMENT,
-  `price` int UNSIGNED NOT NULL,
+  `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `price` int(10) UNSIGNED NOT NULL,
   `producent` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   `profile` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
-  `diameter` int UNSIGNED NOT NULL,
-  `width` int UNSIGNED NOT NULL,
+  `diameter` int(10) UNSIGNED NOT NULL,
+  `width` int(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of t_tires
@@ -175,6 +175,30 @@ INSERT INTO `t_tires` VALUES (1, 1125, 'Yokohama', '40', 19, 285);
 INSERT INTO `t_tires` VALUES (2, 142, 'Debica', '	80', 13, 135);
 INSERT INTO `t_tires` VALUES (3, 360, 'Continental', '	55', 16, 205);
 INSERT INTO `t_tires` VALUES (4, 3460, 'Goodyear', '	40', 21, 255);
+
+-- ----------------------------
+-- Procedure structure for p_format_tire_parameters
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `p_format_tire_parameters`;
+delimiter ;;
+CREATE PROCEDURE `p_format_tire_parameters`()
+BEGIN
+	select producent, concat(width, '/', profile, ' R', diameter) tire from t_tires;
+END
+;;
+delimiter ;
+
+-- ----------------------------
+-- Procedure structure for p_get_car_age
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `p_get_car_age`;
+delimiter ;;
+CREATE PROCEDURE `p_get_car_age`()
+BEGIN
+	select brand, mode, (YEAR(CURDATE()) - (YEAR(year_of_production))) age from t_cars;
+END
+;;
+delimiter ;
 
 -- ----------------------------
 -- Procedure structure for p_price_filter
