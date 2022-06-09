@@ -11,7 +11,7 @@
  Target Server Version : 80029
  File Encoding         : 65001
 
- Date: 07/06/2022 22:24:18
+ Date: 09/06/2022 21:37:00
 */
 
 SET NAMES utf8mb4;
@@ -39,7 +39,7 @@ CREATE TABLE `t_cars`  (
   INDEX `id_shop`(`id_shop` ASC) USING BTREE,
   CONSTRAINT `t_cars_ibfk_1` FOREIGN KEY (`id_tires`) REFERENCES `t_tires` (`ID`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `t_cars_ibfk_2` FOREIGN KEY (`id_shop`) REFERENCES `t_shops` (`ID`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of t_cars
@@ -86,7 +86,7 @@ CREATE TABLE `t_carts`  (
   INDEX `ID`(`ID` ASC, `total_price` ASC) USING BTREE,
   INDEX `total_price`(`total_price` ASC) USING BTREE,
   CONSTRAINT `fk_customer_cart` FOREIGN KEY (`customer_id`) REFERENCES `t_customers` (`ID`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of t_carts
@@ -107,7 +107,7 @@ CREATE TABLE `t_customers`  (
   PRIMARY KEY (`ID`) USING BTREE,
   INDEX `car_id`(`car_id` ASC) USING BTREE,
   CONSTRAINT `car_id` FOREIGN KEY (`car_id`) REFERENCES `t_cars` (`ID`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 52 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 51 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of t_customers
@@ -149,7 +149,7 @@ CREATE TABLE `t_shops`  (
   `is_open` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of t_shops
@@ -171,7 +171,7 @@ CREATE TABLE `t_tires`  (
   `diameter` int UNSIGNED NOT NULL,
   `width` int UNSIGNED NOT NULL,
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of t_tires
@@ -180,6 +180,27 @@ INSERT INTO `t_tires` VALUES (1, 1125, 'Yokohama', '40', 19, 285);
 INSERT INTO `t_tires` VALUES (2, 142, 'Debica', '	80', 13, 135);
 INSERT INTO `t_tires` VALUES (3, 360, 'Continental', '	55', 16, 205);
 INSERT INTO `t_tires` VALUES (4, 3460, 'Goodyear', '	40', 21, 255);
+
+-- ----------------------------
+-- View structure for v_car_price_by_fuel
+-- ----------------------------
+DROP VIEW IF EXISTS `v_car_price_by_fuel`;
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_car_price_by_fuel` AS select `t_cars`.`fuel` AS `fuel`,avg(`t_cars`.`price`) AS `average_price` from `t_cars` group by `t_cars`.`fuel`;
+
+-- ----------------------------
+-- Function structure for f_cars_count
+-- ----------------------------
+DROP FUNCTION IF EXISTS `f_cars_count`;
+delimiter ;;
+CREATE FUNCTION `f_cars_count`(cars_brand varchar(30))
+ RETURNS int
+BEGIN
+declare ile int;
+select count(*) into ile from t_cars where brand like concat('%',cars_brand,'%');
+RETURN ile;
+END
+;;
+delimiter ;
 
 -- ----------------------------
 -- Procedure structure for p_format_tire_parameters
@@ -219,6 +240,21 @@ ELSE
 	SELECT * FROM t_cars WHERE price BETWEEN vFrom AND vTo ORDER BY price DESC;
 END IF;
 
+END
+;;
+delimiter ;
+
+-- ----------------------------
+-- Procedure structure for p_search
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `p_search`;
+delimiter ;;
+CREATE PROCEDURE `p_search`(IN `vName` VARCHAR(50))
+BEGIN
+	SELECT mode AS "nazwa", "t_cars" AS "tabela" FROM t_cars WHERE mode LIKE concat("%", vName, "%")
+	UNION ALL SELECT last_name AS "nazwa", "t_customers" AS "tabela" FROM t_customers WHERE last_name LIKE concat("%", vName, "%")
+	UNION ALL SELECT producent AS "nazwa", "t_tires" AS "tabela" FROM t_tires WHERE producent LIKE concat("%", vName, "%")
+	ORDER BY nazwa;
 END
 ;;
 delimiter ;
