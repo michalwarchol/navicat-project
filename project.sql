@@ -5,13 +5,13 @@
  Source Server Type    : MariaDB
  Source Server Version : 100608
  Source Host           : localhost:3307
- Source Schema         : project
+ Source Schema         : projekt
 
  Target Server Type    : MariaDB
  Target Server Version : 100608
  File Encoding         : 65001
 
- Date: 18/06/2022 12:21:03
+ Date: 19/06/2022 12:59:40
 */
 
 SET NAMES utf8mb4;
@@ -32,25 +32,122 @@ CREATE TABLE `t_cars`  (
   `colour` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   `id_tires` int(10) UNSIGNED NOT NULL,
   `engines` set('1','2') CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL DEFAULT '',
-  `automatic_gearbox` tinyint(1) NULL DEFAULT NULL,
+  `automatic_gearbox` tinyint(1) NULL DEFAULT 0,
   `amount` int(11) NOT NULL,
   `VAT` int(11) NOT NULL DEFAULT 23,
   PRIMARY KEY (`ID`) USING BTREE,
   INDEX `id_tires`(`id_tires`) USING BTREE,
   CONSTRAINT `t_cars_ibfk_1` FOREIGN KEY (`id_tires`) REFERENCES `t_tires` (`ID`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1279 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of t_cars
 -- ----------------------------
-INSERT INTO `t_cars` VALUES (1, 200000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', NULL, 0, 23);
-INSERT INTO `t_cars` VALUES (2, 185000, 'Mitsubishi', 'Lancer EVO X', 2008, '110000', '13', 'white', 3, '', NULL, 0, 23);
-INSERT INTO `t_cars` VALUES (3, 55900, 'Ford', 'Focus', 2016, '17000', '8', 'dark blue', 2, '', NULL, 1, 23);
-INSERT INTO `t_cars` VALUES (4, 73500, 'Kia', 'Sportage', 2017, '47000', '8', 'white', 4, '1,2', NULL, 1, 23);
-INSERT INTO `t_cars` VALUES (5, 26000, 'Opel', 'Astra', 2013, '230570', '6,5', 'red', 2, '', NULL, 1, 23);
-INSERT INTO `t_cars` VALUES (6, 31700, 'Mazda', '5', 2011, '134000', '9', 'silver', 1, '', NULL, 1, 23);
-INSERT INTO `t_cars` VALUES (7, 219900, 'Mercedes-Benz', 'Klasa G', 2010, '72000', '21', 'black', 4, '', NULL, 3, 23);
-INSERT INTO `t_cars` VALUES (8, 68500, 'Ford', 'Mondeo', 2018, '165888', 'no information', 'black', 2, '', NULL, 3, 23);
+INSERT INTO `t_cars` VALUES (1, 248000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23);
+INSERT INTO `t_cars` VALUES (2, 185000, 'Mitsubishi', 'Lancer EVO X', 2008, '110000', '13', 'white', 3, '', 0, 8, 23);
+INSERT INTO `t_cars` VALUES (3, 55900, 'Ford', 'Focus', 2016, '17000', '8', 'dark blue', 2, '', 0, 5, 23);
+INSERT INTO `t_cars` VALUES (4, 73500, 'Kia', 'Sportage', 2017, '47000', '8', 'white', 4, '1,2', 0, 2, 23);
+INSERT INTO `t_cars` VALUES (5, 26000, 'Opel', 'Astra', 2013, '230570', '6,5', 'red', 2, '', 1, 1, 23);
+INSERT INTO `t_cars` VALUES (6, 31700, 'Mazda', '5', 2011, '134000', '9', 'silver', 1, '', 0, 10, 23);
+INSERT INTO `t_cars` VALUES (7, 219900, 'Mercedes-Benz', 'Klasa G', 2010, '72000', '21', 'black', 4, '', 0, 4, 23);
+INSERT INTO `t_cars` VALUES (8, 68500, 'Ford', 'Mondeo', 2018, '165888', 'no information', 'black', 2, '', 1, 3, 23);
+
+-- ----------------------------
+-- Table structure for t_cars_old
+-- ----------------------------
+DROP TABLE IF EXISTS `t_cars_old`;
+CREATE TABLE `t_cars_old`  (
+  `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ID_car` int(10) NOT NULL,
+  `price` int(11) NOT NULL,
+  `brand` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `mode` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `year_of_production` year NOT NULL,
+  `course` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `combusion` varchar(15) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `colour` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `id_tires` int(11) NOT NULL,
+  `engines` set('1','2') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT '',
+  `automatic_gearbox` tinyint(4) NOT NULL,
+  `amount` int(11) NOT NULL,
+  `VAT` int(11) NOT NULL DEFAULT 23,
+  `TYPE` enum('INSERT','UPDATE','DELETE') CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`ID`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 66 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic PARTITION BY SYSTEM_TIME (unix_timestamp(`row_end`))
+PARTITIONS 2
+(PARTITION `p_current` ENGINE = InnoDB MAX_ROWS = 0 MIN_ROWS = 0 ,
+PARTITION `p_history` ENGINE = InnoDB MAX_ROWS = 0 MIN_ROWS = 0 )
+;
+
+-- ----------------------------
+-- Records of t_cars_old
+-- ----------------------------
+INSERT INTO `t_cars_old` VALUES (1, 1278, 45555, 'Ford', 'Fiesta', 2019, '0', '5', 'white', 1, '1', 1, 5, 23, 'INSERT', '2022-06-18 19:03:21');
+INSERT INTO `t_cars_old` VALUES (2, 1278, 45555, 'Ford', 'Fiestaa', 2019, '0', '5', 'white', 1, '1', 1, 5, 23, 'UPDATE', '2022-06-18 19:07:42');
+INSERT INTO `t_cars_old` VALUES (3, 1278, 45555, 'Ford', 'Fiestaa', 2019, '0', '5', 'white', 1, '1', 1, 5, 23, 'DELETE', '2022-06-18 19:07:54');
+INSERT INTO `t_cars_old` VALUES (4, 1, 200000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 11:23:03');
+INSERT INTO `t_cars_old` VALUES (5, 2, 185000, 'Mitsubishi', 'Lancer EVO X', 2008, '110000', '13', 'white', 3, '', 0, 0, 23, 'UPDATE', '2022-06-19 11:23:04');
+INSERT INTO `t_cars_old` VALUES (6, 3, 55900, 'Ford', 'Focus', 2016, '17000', '8', 'dark blue', 2, '', 0, 1, 23, 'UPDATE', '2022-06-19 11:23:04');
+INSERT INTO `t_cars_old` VALUES (7, 4, 73500, 'Kia', 'Sportage', 2017, '47000', '8', 'white', 4, '1,2', 0, 1, 23, 'UPDATE', '2022-06-19 11:23:05');
+INSERT INTO `t_cars_old` VALUES (8, 5, 26000, 'Opel', 'Astra', 2013, '230570', '6,5', 'red', 2, '', 1, 1, 23, 'UPDATE', '2022-06-19 11:23:08');
+INSERT INTO `t_cars_old` VALUES (9, 6, 31700, 'Mazda', '5', 2011, '134000', '9', 'silver', 1, '', 0, 1, 23, 'UPDATE', '2022-06-19 11:23:09');
+INSERT INTO `t_cars_old` VALUES (10, 8, 68500, 'Ford', 'Mondeo', 2018, '165888', 'no information', 'black', 2, '', 1, 3, 23, 'UPDATE', '2022-06-19 11:23:11');
+INSERT INTO `t_cars_old` VALUES (11, 7, 219900, 'Mercedes-Benz', 'Klasa G', 2010, '72000', '21', 'black', 4, '', 0, 3, 23, 'UPDATE', '2022-06-19 11:23:16');
+INSERT INTO `t_cars_old` VALUES (12, 2, 185000, 'Mitsubishi', 'Lancer EVO X', 2008, '110000', '13', 'white', 3, '', 0, 8, 23, 'UPDATE', '2022-06-19 11:23:21');
+INSERT INTO `t_cars_old` VALUES (13, 3, 55900, 'Ford', 'Focus', 2016, '17000', '8', 'dark blue', 2, '', 0, 5, 23, 'UPDATE', '2022-06-19 11:23:23');
+INSERT INTO `t_cars_old` VALUES (14, 4, 73500, 'Kia', 'Sportage', 2017, '47000', '8', 'white', 4, '1,2', 0, 2, 23, 'UPDATE', '2022-06-19 11:23:24');
+INSERT INTO `t_cars_old` VALUES (15, 6, 31700, 'Mazda', '5', 2011, '134000', '9', 'silver', 1, '', 0, 12, 23, 'UPDATE', '2022-06-19 11:23:28');
+INSERT INTO `t_cars_old` VALUES (16, 7, 219900, 'Mercedes-Benz', 'Klasa G', 2010, '72000', '21', 'black', 4, '', 0, 4, 23, 'UPDATE', '2022-06-19 11:23:32');
+INSERT INTO `t_cars_old` VALUES (17, 6, 31700, 'Mazda', '5', 2011, '134000', '9', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:19:13');
+INSERT INTO `t_cars_old` VALUES (18, 1, 201000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:54:37');
+INSERT INTO `t_cars_old` VALUES (19, 1, 202000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:54:38');
+INSERT INTO `t_cars_old` VALUES (20, 1, 203000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:54:39');
+INSERT INTO `t_cars_old` VALUES (21, 1, 204000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:54:40');
+INSERT INTO `t_cars_old` VALUES (22, 1, 205000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:54:41');
+INSERT INTO `t_cars_old` VALUES (23, 1, 206000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:54:42');
+INSERT INTO `t_cars_old` VALUES (24, 1, 207000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:54:43');
+INSERT INTO `t_cars_old` VALUES (25, 1, 208000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:54:44');
+INSERT INTO `t_cars_old` VALUES (26, 1, 209000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:54:45');
+INSERT INTO `t_cars_old` VALUES (27, 1, 210000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:54:46');
+INSERT INTO `t_cars_old` VALUES (28, 1, 211000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:54:47');
+INSERT INTO `t_cars_old` VALUES (29, 1, 212000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:54:48');
+INSERT INTO `t_cars_old` VALUES (30, 1, 213000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:54:49');
+INSERT INTO `t_cars_old` VALUES (31, 1, 214000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:54:50');
+INSERT INTO `t_cars_old` VALUES (32, 1, 215000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:54:51');
+INSERT INTO `t_cars_old` VALUES (33, 1, 216000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:54:52');
+INSERT INTO `t_cars_old` VALUES (34, 1, 217000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:54:53');
+INSERT INTO `t_cars_old` VALUES (35, 1, 218000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:54:54');
+INSERT INTO `t_cars_old` VALUES (36, 1, 219000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:54:55');
+INSERT INTO `t_cars_old` VALUES (37, 1, 220000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:54:56');
+INSERT INTO `t_cars_old` VALUES (38, 1, 221000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:54:57');
+INSERT INTO `t_cars_old` VALUES (39, 1, 222000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:54:58');
+INSERT INTO `t_cars_old` VALUES (40, 1, 223000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:54:59');
+INSERT INTO `t_cars_old` VALUES (41, 1, 224000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:55:00');
+INSERT INTO `t_cars_old` VALUES (42, 1, 225000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:55:01');
+INSERT INTO `t_cars_old` VALUES (43, 1, 226000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:55:02');
+INSERT INTO `t_cars_old` VALUES (44, 1, 227000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:55:03');
+INSERT INTO `t_cars_old` VALUES (45, 1, 228000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:55:04');
+INSERT INTO `t_cars_old` VALUES (46, 1, 229000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:55:05');
+INSERT INTO `t_cars_old` VALUES (47, 1, 230000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:55:06');
+INSERT INTO `t_cars_old` VALUES (48, 1, 231000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:55:07');
+INSERT INTO `t_cars_old` VALUES (49, 1, 232000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:55:08');
+INSERT INTO `t_cars_old` VALUES (50, 1, 233000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:55:09');
+INSERT INTO `t_cars_old` VALUES (51, 1, 234000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:55:10');
+INSERT INTO `t_cars_old` VALUES (52, 1, 235000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:55:11');
+INSERT INTO `t_cars_old` VALUES (53, 1, 236000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:55:12');
+INSERT INTO `t_cars_old` VALUES (54, 1, 237000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:55:13');
+INSERT INTO `t_cars_old` VALUES (55, 1, 238000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:55:14');
+INSERT INTO `t_cars_old` VALUES (56, 1, 239000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:55:15');
+INSERT INTO `t_cars_old` VALUES (57, 1, 240000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:55:16');
+INSERT INTO `t_cars_old` VALUES (58, 1, 241000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:55:17');
+INSERT INTO `t_cars_old` VALUES (59, 1, 242000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:55:18');
+INSERT INTO `t_cars_old` VALUES (60, 1, 243000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:55:19');
+INSERT INTO `t_cars_old` VALUES (61, 1, 244000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:55:20');
+INSERT INTO `t_cars_old` VALUES (62, 1, 245000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:55:21');
+INSERT INTO `t_cars_old` VALUES (63, 1, 246000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:55:22');
+INSERT INTO `t_cars_old` VALUES (64, 1, 247000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:55:23');
+INSERT INTO `t_cars_old` VALUES (65, 1, 248000, 'Mazda', 'RX-7', 2002, '100000', '20', 'silver', 1, '', 0, 10, 23, 'UPDATE', '2022-06-19 12:55:24');
 
 -- ----------------------------
 -- Table structure for t_cart_cars
@@ -62,8 +159,8 @@ CREATE TABLE `t_cart_cars`  (
   `amount` int(11) NOT NULL,
   PRIMARY KEY (`id_cart`, `id_car`) USING BTREE,
   INDEX `fk_cart_car`(`id_car`) USING BTREE,
-  CONSTRAINT `fk_cart_car` FOREIGN KEY (`id_car`) REFERENCES `t_cars` (`ID`) ON DELETE CASCADE ON UPDATE RESTRICT,
-  CONSTRAINT `fk_cart_cart` FOREIGN KEY (`id_cart`) REFERENCES `t_carts` (`ID`) ON DELETE CASCADE ON UPDATE RESTRICT
+  CONSTRAINT `fk_cart_car` FOREIGN KEY (`id_car`) REFERENCES `t_cars` (`ID`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `fk_cart_cart` FOREIGN KEY (`id_cart`) REFERENCES `t_carts` (`ID`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -77,19 +174,23 @@ DROP TABLE IF EXISTS `t_carts`;
 CREATE TABLE `t_carts`  (
   `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `customer_id` int(10) UNSIGNED NOT NULL,
-  `total_price` int(11) NULL DEFAULT NULL,
-  `car_amount` int(11) NULL DEFAULT NULL,
+  `total_price` int(11) NOT NULL DEFAULT 0,
+  `car_amount` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`ID`) USING BTREE,
   INDEX `fk_customer_cart`(`customer_id`) USING BTREE,
   INDEX `ID`(`ID`, `total_price`) USING BTREE,
   INDEX `total_price`(`total_price`) USING BTREE,
-  CONSTRAINT `fk_customer_cart` FOREIGN KEY (`customer_id`) REFERENCES `t_customers` (`ID`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
+  CONSTRAINT `fk_customer_cart` FOREIGN KEY (`customer_id`) REFERENCES `t_customers` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of t_carts
 -- ----------------------------
-INSERT INTO `t_carts` VALUES (1, 50, 0, 0);
+INSERT INTO `t_carts` VALUES (3, 58, 0, 0);
+INSERT INTO `t_carts` VALUES (4, 59, 0, 0);
+INSERT INTO `t_carts` VALUES (5, 60, 0, 0);
+INSERT INTO `t_carts` VALUES (7, 62, 0, 0);
+INSERT INTO `t_carts` VALUES (8, 63, 0, 0);
 
 -- ----------------------------
 -- Table structure for t_carts_archive
@@ -106,11 +207,8 @@ CREATE TABLE `t_carts_archive`  (
   PRIMARY KEY (`ID`) USING BTREE,
   INDEX `fk_cart`(`cart_id`) USING BTREE,
   INDEX `fk_car`(`car_id`) USING BTREE,
-  INDEX `order_number`(`order_number`) USING BTREE,
-  CONSTRAINT `fk_car` FOREIGN KEY (`car_id`) REFERENCES `t_cars` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_cart` FOREIGN KEY (`cart_id`) REFERENCES `t_carts` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_order_num` FOREIGN KEY (`order_number`) REFERENCES `t_invoices` (`order_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE = InnoDB AUTO_INCREMENT = 23 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
+  INDEX `order_number`(`order_number`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 24 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of t_carts_archive
@@ -119,6 +217,7 @@ INSERT INTO `t_carts_archive` VALUES (19, 1, 2, 2, 'd9f497dc-ee88-11ec-acf7-fcaa
 INSERT INTO `t_carts_archive` VALUES (20, 1, 5, 1, 'df68bac0-eee8-11ec-acfd-fcaa140ffb45', 26000, 23);
 INSERT INTO `t_carts_archive` VALUES (21, 1, 3, 1, 'f706faea-eeea-11ec-acfd-fcaa140ffb45', 55900, 23);
 INSERT INTO `t_carts_archive` VALUES (22, 1, 6, 2, 'f706faea-eeea-11ec-acfd-fcaa140ffb45', 31700, 23);
+INSERT INTO `t_carts_archive` VALUES (23, 5, 6, 2, '431bdbf1-efb9-11ec-abf2-fcaa140ffb45', 31700, 23);
 
 -- ----------------------------
 -- Table structure for t_customers
@@ -134,21 +233,16 @@ CREATE TABLE `t_customers`  (
   `city` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   `postal_code` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 54 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 64 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of t_customers
 -- ----------------------------
-INSERT INTO `t_customers` VALUES (1, 'Jan', 'Nowak', '', '', '', '', '');
-INSERT INTO `t_customers` VALUES (2, 'Dave', 'Kowalsky', '', '', '', '', '');
-INSERT INTO `t_customers` VALUES (3, 'Maciej', 'Rozek', '', '', '', '', '');
-INSERT INTO `t_customers` VALUES (4, 'Michal', 'Czeresniak', '', '', '', '', '');
-INSERT INTO `t_customers` VALUES (5, 'Filip', 'Maria - Rokita', '', '', '', '', '');
-INSERT INTO `t_customers` VALUES (6, 'Pawel', 'Zlotousty', '', '', '', '', '');
-INSERT INTO `t_customers` VALUES (50, 'Michał', 'Warchoł', 'm_warchoł', '', '', '', '');
-INSERT INTO `t_customers` VALUES (51, 'Mikołaj', 'Warchoł', 'm_warchoł_1', '', '', '', '');
-INSERT INTO `t_customers` VALUES (52, 'majkel', 'warchol', 'snafu', '*196BDEDE2AE4F84CA44C47D54D78478C7E2BD7B7', '', '', '');
-INSERT INTO `t_customers` VALUES (53, 'Szymon', 'Twardowski', '_1', '*83153E7C2E43C960F2C5F51BD6EDCFA2E86097F1', 'Zielone Maki 52', 'Kraków', '69-420');
+INSERT INTO `t_customers` VALUES (58, 'Tadeusz', 'Nowak', 't_nowak', '*058C73C399BEFE8004B26B5D8A8A1B94D49C6397', 'ul. Hetmańska 62', 'Rzeszów', '35-046');
+INSERT INTO `t_customers` VALUES (59, 'Bożena', 'Lipska', 'bozenka72', '*3CA64CBE8E2699F1A79C4763E74524741B12505A', 'ul. Jodłowa 94', 'Kraków', '30-251');
+INSERT INTO `t_customers` VALUES (60, 'Mariusz', 'Pudzianowski', 'pudzian', '*4D6178C5EE3A2837A3298B5F2C62BFA3BC3417AA', 'ul. Wspólna 87', 'Poznań', '61-479');
+INSERT INTO `t_customers` VALUES (62, 'Arkadiusz', 'Stępień', 'a_stępień', '*3F2002925BBF855594E3B34F613416CBB35C9E50', 'ul. Bolesława Chrobrego 41', 'Zielona Góra', '65-052');
+INSERT INTO `t_customers` VALUES (63, 'Kinga', 'Zając', 'k_zając', '*B1E6AB80F4C323903B861A4450185634EEBD8282', 'ul. Lotnicza 41', 'Kwidzyn', '82-504');
 
 -- ----------------------------
 -- Table structure for t_engines
@@ -161,11 +255,14 @@ CREATE TABLE `t_engines`  (
   `volume` int(11) NOT NULL,
   `fuel` enum('diesel','petrol','hybrid','electric','gas') CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL DEFAULT 'petrol',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of t_engines
 -- ----------------------------
+INSERT INTO `t_engines` VALUES (1, 4, 320, 1969, 'petrol');
+INSERT INTO `t_engines` VALUES (2, 3, 86, 1197, 'petrol');
+INSERT INTO `t_engines` VALUES (3, 4, 190, 1968, 'diesel');
 
 -- ----------------------------
 -- Table structure for t_invoices
@@ -183,22 +280,15 @@ CREATE TABLE `t_invoices`  (
   INDEX `fk_order_id`(`order_id`) USING BTREE,
   INDEX `fk_invoice_customer_id`(`customer_id`) USING BTREE,
   CONSTRAINT `fk_invoice_customer_id` FOREIGN KEY (`customer_id`) REFERENCES `t_customers` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 28 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 32 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of t_invoices
 -- ----------------------------
-INSERT INTO `t_invoices` VALUES (17, '2022-06-17', 50, '8724a085-ee82-11ec-acf7-fcaa140ffb45', 'bank transfer', '2022-06-17', '2022-06-17');
-INSERT INTO `t_invoices` VALUES (18, '2022-06-17', 50, 'ac12769f-ee84-11ec-acf7-fcaa140ffb45', 'bank transfer', '2022-06-17', '2022-06-17');
-INSERT INTO `t_invoices` VALUES (19, '2022-06-17', 50, 'f38f9c52-ee84-11ec-acf7-fcaa140ffb45', 'bank transfer', '2022-06-17', '2022-06-17');
-INSERT INTO `t_invoices` VALUES (20, '2022-06-18', 50, 'd9f497dc-ee88-11ec-acf7-fcaa140ffb45', 'bank transfer', '2022-06-18', '2022-06-18');
-INSERT INTO `t_invoices` VALUES (21, '2022-06-18', 50, 'f950fa96-eee7-11ec-acfd-fcaa140ffb45', 'bank transfer', '2022-06-18', '2022-06-18');
-INSERT INTO `t_invoices` VALUES (22, '2022-06-18', 50, '35991065-eee8-11ec-acfd-fcaa140ffb45', 'bank transfer', '2022-06-18', '2022-06-18');
-INSERT INTO `t_invoices` VALUES (23, '2022-06-18', 50, '3795ca20-eee8-11ec-acfd-fcaa140ffb45', 'bank transfer', '2022-06-18', '2022-06-18');
-INSERT INTO `t_invoices` VALUES (24, '2022-06-18', 50, '69006e98-eee8-11ec-acfd-fcaa140ffb45', 'bank transfer', '2022-06-18', '2022-06-18');
-INSERT INTO `t_invoices` VALUES (25, '2022-06-18', 50, '89dd2ce3-eee8-11ec-acfd-fcaa140ffb45', 'bank transfer', '2022-06-18', '2022-06-18');
-INSERT INTO `t_invoices` VALUES (26, '2022-06-18', 50, 'df68bac0-eee8-11ec-acfd-fcaa140ffb45', 'bank transfer', '2022-06-18', '2022-06-18');
-INSERT INTO `t_invoices` VALUES (27, '2022-06-18', 50, 'f706faea-eeea-11ec-acfd-fcaa140ffb45', 'bank transfer', '2022-06-18', '2022-06-18');
+INSERT INTO `t_invoices` VALUES (28, '2022-06-19', 60, '431bdbf1-efb9-11ec-abf2-fcaa140ffb45', 'cash', '2022-06-19', '2022-06-19');
+INSERT INTO `t_invoices` VALUES (29, '2022-06-19', 60, '73eff494-efbc-11ec-abf2-fcaa140ffb45', 'cash', '2022-06-19', '2022-06-19');
+INSERT INTO `t_invoices` VALUES (30, '2022-06-19', 60, 'd8b1d3b1-efbc-11ec-abf2-fcaa140ffb45', 'cash', '2022-06-19', '2022-06-19');
+INSERT INTO `t_invoices` VALUES (31, '2022-06-19', 60, '0b62f5cd-efbd-11ec-abf2-fcaa140ffb45', 'cash', '2022-06-19', '2022-06-19');
 
 -- ----------------------------
 -- Table structure for t_orders
@@ -206,24 +296,21 @@ INSERT INTO `t_invoices` VALUES (27, '2022-06-18', 50, 'f706faea-eeea-11ec-acfd-
 DROP TABLE IF EXISTS `t_orders`;
 CREATE TABLE `t_orders`  (
   `ID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `status` enum('IN PROGRESS','PAID','DELIVERED') CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   `created_at` datetime NOT NULL,
   `invoice_id` int(10) UNSIGNED NOT NULL,
   `order_number` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_polish_ci NOT NULL,
   PRIMARY KEY (`ID`) USING BTREE,
   INDEX `fk_invoice`(`invoice_id`) USING BTREE,
   CONSTRAINT `fk_invoice` FOREIGN KEY (`invoice_id`) REFERENCES `t_invoices` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_polish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of t_orders
 -- ----------------------------
-INSERT INTO `t_orders` VALUES (2, 'IN PROGRESS', '2022-06-17 23:14:52', 17, '8724a085-ee82-11ec-acf7-fcaa140ffb45');
-INSERT INTO `t_orders` VALUES (3, 'IN PROGRESS', '2022-06-17 23:30:13', 18, 'ac12769f-ee84-11ec-acf7-fcaa140ffb45');
-INSERT INTO `t_orders` VALUES (4, 'IN PROGRESS', '2022-06-17 23:32:13', 19, 'f38f9c52-ee84-11ec-acf7-fcaa140ffb45');
-INSERT INTO `t_orders` VALUES (5, 'IN PROGRESS', '2022-06-18 00:00:08', 20, 'd9f497dc-ee88-11ec-acf7-fcaa140ffb45');
-INSERT INTO `t_orders` VALUES (6, 'IN PROGRESS', '2022-06-18 11:27:30', 26, 'df68bac0-eee8-11ec-acfd-fcaa140ffb45');
-INSERT INTO `t_orders` VALUES (7, 'IN PROGRESS', '2022-06-18 11:42:29', 27, 'f706faea-eeea-11ec-acfd-fcaa140ffb45');
+INSERT INTO `t_orders` VALUES (8, '2022-06-19 12:19:13', 28, '431bdbf1-efb9-11ec-abf2-fcaa140ffb45');
+INSERT INTO `t_orders` VALUES (9, '2022-06-19 12:42:04', 29, '73eff494-efbc-11ec-abf2-fcaa140ffb45');
+INSERT INTO `t_orders` VALUES (10, '2022-06-19 12:44:53', 30, 'd8b1d3b1-efbc-11ec-abf2-fcaa140ffb45');
+INSERT INTO `t_orders` VALUES (11, '2022-06-19 12:46:18', 31, '0b62f5cd-efbd-11ec-abf2-fcaa140ffb45');
 
 -- ----------------------------
 -- Table structure for t_tires
@@ -253,13 +340,7 @@ INSERT INTO `t_tires` VALUES (4, 3460, 'Goodyear', '	40', 21, 255);
 DROP VIEW IF EXISTS `v_cars_tires_shops`;
 CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_cars_tires_shops` AS #select brand, mode, year_of_production from t_cars
 
-select brand, mode, year_of_production, profile as tire_profile, diameter as tire_diameter, width as tire_width from t_cars, t_tires where t_cars.id_tires = t_tires.ID ;
-
--- ----------------------------
--- View structure for v_car_price_by_fuel
--- ----------------------------
-DROP VIEW IF EXISTS `v_car_price_by_fuel`;
-CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `v_car_price_by_fuel` AS select `t_cars`.`fuel` AS `fuel`,avg(`t_cars`.`price`) AS `average_price` from `t_cars` group by `t_cars`.`fuel`; ;
+select brand, mode, year_of_production, profile as tire_profile, diameter as tire_diameter, width as tire_width from t_cars, t_tires where t_cars.id_tires = t_tires.ID ; ;
 
 -- ----------------------------
 -- Function structure for f_cars_count
@@ -284,12 +365,12 @@ delimiter ;;
 CREATE PROCEDURE `p_add_car_to_cart`(IN `vCarID` int,IN `vCartID` int)
 BEGIN
 	DECLARE isInDb int;
-	SET isInDB = (SELECT count(*) FROM t_cart_cars WHERE car_id=vCarID);
+	SET isInDB = (SELECT count(*) FROM t_cart_cars WHERE id_car=vCarID AND id_cart=vCartID);
 	
 	IF isInDB > 0 THEN
-		UPDATE t_cart_cars SET amount=isInDb+1 WHERE cart_id=vCartID AND car_id=vCarID;
+		UPDATE t_cart_cars SET amount=isInDb+1 WHERE id_cart=vCartID AND id_car=vCarID;
 	ELSE
-		INSERT INTO t_cart_cars (cart_id, car_id, amount) VALUES (vCartID, vCarID, 1);
+		INSERT INTO t_cart_cars (id_cart, id_car, amount) VALUES (vCartID, vCarID, 1);
 	END IF;
 
 END
@@ -329,9 +410,16 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `p_delete_car_from_cart`;
 delimiter ;;
-CREATE PROCEDURE `p_delete_car_from_cart`(IN `vCartID` int,IN `vCarID` int)
+CREATE PROCEDURE `p_delete_car_from_cart`(IN `vCarID` int,IN `vCartID` int)
 BEGIN
-	DELETE FROM t_cart_cars WHERE cart_id=vCartID AND car_id=vCarID;
+	DECLARE isInDb int;
+	SET isInDB = (SELECT count(*) FROM t_cart_cars WHERE id_car=vCarID AND id_cart=vCartID);
+	
+	IF isInDB > 1 THEN
+		UPDATE t_cart_cars SET amount=isInDb-1 WHERE id_cart=vCartID AND id_car=vCarID;
+	ELSE
+		DELETE FROM t_cart_cars WHERE id_cart=vCartID AND id_car=vCarID;
+	END IF;
 
 END
 ;;
@@ -380,24 +468,37 @@ delimiter ;
 -- ----------------------------
 DROP PROCEDURE IF EXISTS `p_make_order`;
 delimiter ;;
-CREATE PROCEDURE `p_make_order`(IN `vCartID` int)
+CREATE PROCEDURE `p_make_order`(IN `vCartID` int, IN vPaymentMethod VARCHAR(14))
 BEGIN
 	DECLARE canCommit int;
 	DECLARE ORDERID VARCHAR(36);
 	DECLARE customerID int;
 	DECLARE invoiceID int;
+	DECLARE payment VARCHAR(14);
 	START TRANSACTION;
 		SET canCommit = (SELECT count(*) FROM t_cart_cars LEFT JOIN t_cars ON id_car=t_cars.ID WHERE id_cart=vCartID AND t_cart_cars.amount > t_cars.amount);
+		
+		IF NOT EXISTS (SELECT * FROM t_cart_cars WHERE id_cart=vCartID) THEN
+			SELECT "Brak produktów w koszyku!" AS "Komunikat";
+			ROLLBACK;
+		END IF;
 		
 		IF canCommit > 0 THEN
 			SELECT "Brak samochodów na stanie!" AS "Komunikat";
 			ROLLBACK;
 		ELSE
+		
+			IF vPaymentMethod IS NULL THEN
+				SET payment = "bank transfer";
+			ELSE
+				SET payment = vPaymentMethod;
+			END IF;
+
 			SET ORDERID = UUID();
 			SELECT customer_id INTO customerID from t_carts WHERE ID=vCartID;
 			
 			#tworzenie faktury
-			INSERT INTO t_invoices (date_of_invoice, customer_id, order_id, date_of_payment, date_of_purchase) VALUES (CURRENT_DATE(), customerID, ORDERID, CURRENT_DATE(), CURRENT_DATE());
+			INSERT INTO t_invoices (date_of_invoice, customer_id, order_id, date_of_payment, date_of_purchase, payment_method) VALUES (CURRENT_DATE(), customerID, ORDERID, CURRENT_DATE(), CURRENT_DATE(), payment);
 
 			#wstawianie zamówionych samochodów do archiwalnej tabeli
 			#odejmowanie kupionych samochodów ze stanu
@@ -544,21 +645,54 @@ DROP EVENT IF EXISTS `e_price_update`;
 delimiter ;;
 CREATE EVENT `e_price_update`
 ON SCHEDULE
-EVERY '1' SECOND STARTS '2022-06-11 00:00:02'
+EVERY '1' HOUR STARTS '2022-06-19 20:45:00' ENDS '2022-06-19 22:00:00'
 ON COMPLETION PRESERVE
-DO update t_cars set price = price + 1000 where ID = 1
+DO update t_cars set price = price + 1000
 ;;
 delimiter ;
 
 -- ----------------------------
--- Event structure for update_price
+-- Triggers structure for table t_cars
 -- ----------------------------
-DROP EVENT IF EXISTS `update_price`;
+DROP TRIGGER IF EXISTS `t_car_insert`;
 delimiter ;;
-CREATE EVENT `update_price`
-ON SCHEDULE
-EVERY '1' SECOND STARTS '2022-06-11 00:04:15'
-DO update t_cars set price = price + 1
+CREATE TRIGGER `t_car_insert` AFTER INSERT ON `t_cars` FOR EACH ROW BEGIN
+
+INSERT 
+INTO t_cars_old (id_car, price, brand, mode, year_of_production, course, combusion, colour, id_tires, engines, automatic_gearbox, amount, VAT, TYPE, date) 
+VALUES (NEW.ID, NEW.price, NEW.brand, NEW.mode, NEW.year_of_production, NEW.course, NEW.combusion, NEW.colour, NEW.id_tires, NEW.engines, NEW.automatic_gearbox, NEW.amount, NEW.VAT, 'INSERT', CURRENT_TIMESTAMP());
+
+END
+;;
+delimiter ;
+
+-- ----------------------------
+-- Triggers structure for table t_cars
+-- ----------------------------
+DROP TRIGGER IF EXISTS `t_car_update`;
+delimiter ;;
+CREATE TRIGGER `t_car_update` AFTER UPDATE ON `t_cars` FOR EACH ROW BEGIN
+
+INSERT 
+INTO t_cars_old (id_car, price, brand, mode, year_of_production, course, combusion, colour, id_tires, engines, automatic_gearbox, amount, VAT, TYPE, date) 
+VALUES (NEW.ID, NEW.price, NEW.brand, NEW.mode, NEW.year_of_production, NEW.course, NEW.combusion, NEW.colour, NEW.id_tires, NEW.engines, NEW.automatic_gearbox, NEW.amount, NEW.VAT, 'UPDATE', CURRENT_TIMESTAMP());
+
+END
+;;
+delimiter ;
+
+-- ----------------------------
+-- Triggers structure for table t_cars
+-- ----------------------------
+DROP TRIGGER IF EXISTS `t_car_delete`;
+delimiter ;;
+CREATE TRIGGER `t_car_delete` AFTER DELETE ON `t_cars` FOR EACH ROW BEGIN
+
+INSERT 
+INTO t_cars_old (id_car, price, brand, mode, year_of_production, course, combusion, colour, id_tires, engines, automatic_gearbox, amount, VAT, TYPE, date) 
+VALUES (OLD.ID, OLD.price, OLD.brand, OLD.mode, OLD.year_of_production, OLD.course, OLD.combusion, OLD.colour, OLD.id_tires, OLD.engines, OLD.automatic_gearbox, OLD.amount, OLD.VAT, 'DELETE', CURRENT_TIMESTAMP());
+
+END
 ;;
 delimiter ;
 
@@ -634,36 +768,10 @@ delimiter ;
 -- ----------------------------
 -- Triggers structure for table t_customers
 -- ----------------------------
-DROP TRIGGER IF EXISTS `tr_create_login`;
+DROP TRIGGER IF EXISTS `tr_hash_password`;
 delimiter ;;
-CREATE TRIGGER `tr_create_login` BEFORE INSERT ON `t_customers` FOR EACH ROW BEGIN
-
-DECLARE amount INT;
-DECLARE baseNick VARCHAR(60);
-DECLARE nick VARCHAR(60);
-DECLARE isInDb INT;
-
-IF NEW.nickname IS NOT NULL THEN
-	SET baseNick = NEW.nickname;
-ELSE
-	SET baseNick = concat(LOWER(left(NEW.first_name, 1)), "_", LOWER(NEW.last_name));
-END IF;
-
-SET isInDB = (SELECT count(*) FROM t_customers WHERE nickname LIKE baseNick);
-
-IF isInDb = 0 THEN
-	SET NEW.nickname = baseNick;
-ELSE
-	SET amount = 0;
-
-	WHILE (isInDb > 0) DO
-		SET amount = amount + 1;
-		SET nick = concat(baseNick, "_", amount);
-		SET isInDB = (SELECT count(*) FROM t_customers WHERE nickname LIKE nick);
-	END WHILE;
-	SET NEW.nickname = concat(baseNick, "_", amount);
-END IF;
-
+CREATE TRIGGER `tr_hash_password` BEFORE INSERT ON `t_customers` FOR EACH ROW BEGIN
+ SET NEW.password = PASSWORD(NEW.password);
 END
 ;;
 delimiter ;
@@ -671,10 +779,34 @@ delimiter ;
 -- ----------------------------
 -- Triggers structure for table t_customers
 -- ----------------------------
-DROP TRIGGER IF EXISTS `tr_hash_password`;
+DROP TRIGGER IF EXISTS `tr_create_login`;
 delimiter ;;
-CREATE TRIGGER `tr_hash_password` BEFORE INSERT ON `t_customers` FOR EACH ROW BEGIN
- SET NEW.password = PASSWORD(NEW.password);
+CREATE TRIGGER `tr_create_login` BEFORE INSERT ON `t_customers` FOR EACH ROW BEGIN
+
+declare licznik int default 0;
+declare isInDb int;
+if(NEW.nickname is null OR length(NEW.nickname) = 0 OR EXISTS (SELECT nickname FROM t_customers WHERE nickname = NEW.nickname)) THEN
+set NEW.nickname = concat(left(NEW.first_name, 1), "_",  NEW.last_name);
+        
+while(NEW.nickname in (select nickname from t_customers)) DO
+set licznik = licznik+1;
+        
+set NEW.nickname = concat(vlogin, "_",  licznik);
+end while;
+end IF;
+set NEW.nickname = lower(NEW.nickname);
+        
+END
+;;
+delimiter ;
+
+-- ----------------------------
+-- Triggers structure for table t_customers
+-- ----------------------------
+DROP TRIGGER IF EXISTS `tr_create_cart`;
+delimiter ;;
+CREATE TRIGGER `tr_create_cart` AFTER INSERT ON `t_customers` FOR EACH ROW BEGIN
+	INSERT INTO t_carts (customer_id) VALUES (NEW.ID);
 END
 ;;
 delimiter ;
